@@ -8,7 +8,7 @@ import an_1
 import pandas as pd
 from datetime import datetime
 import seaborn as sns
-ROOT = "/Users/fengzhang/PycharmProjects/inboom_cta/ml_cta/3"
+ROOT = "3"
 
 def return_stats(day_return, flag):
     def get_sharpe_ratio(b):
@@ -211,11 +211,11 @@ def get_avg_data():
 
     :return: is_data/test_data/json_data
     """
-    with open('/Users/fengzhang/PycharmProjects/inboom_cta/ml_cta/data/is_data.json', 'r') as json_file:
+    with open('data/is_data.json', 'r') as json_file:
         d1 = json.load(json_file)
-    with open('/Users/fengzhang/PycharmProjects/inboom_cta/ml_cta/data/test_data.json', 'r') as json_file:
+    with open('data/test_data.json', 'r') as json_file:
         d2 = json.load(json_file)
-    with open('/Users/fengzhang/PycharmProjects/inboom_cta/ml_cta/data/train_data.json', 'r') as json_file:
+    with open('data/train_data.json', 'r') as json_file:
         d3 = json.load(json_file)
     return [d1,d2,d3]
 
