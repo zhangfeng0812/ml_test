@@ -8,7 +8,7 @@ import an_1
 import pandas as pd
 from datetime import datetime
 import seaborn as sns
-ROOT = "comb11"
+ROOT = "3"
 
 def return_stats(day_return, flag):
     def get_sharpe_ratio(b):
