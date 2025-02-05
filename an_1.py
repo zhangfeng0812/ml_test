@@ -136,7 +136,7 @@ class An:
                     max_duration = duration
 
         dic['max_drawdown'] = max_drawdown
-        #dic['max_drawdown_duration'] = max_duration  # 新增字段
+        # dic['max_drawdown_duration'] = max_duration  # 新增字段
 
         # 其他指标（保持不变）
         dic['trade_day'] = list(day_return.index)

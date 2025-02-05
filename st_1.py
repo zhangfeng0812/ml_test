@@ -1,3 +1,4 @@
+import streamlit
 import streamlit as st
 import os
 import json
@@ -8,7 +9,110 @@ import an_1
 import pandas as pd
 from datetime import datetime
 import seaborn as sns
-ROOT = "3"
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+ROOT = "zd8"
+
+def get_portfolio(df,window_length=120):
+    def calculate_risk_contribution(w, cov_matrix):
+        """计算各资产的风险贡献"""
+        port_vol = np.sqrt(w.T @ cov_matrix @ w)
+        marginal_contrib = (cov_matrix @ w) / port_vol
+        risk_contrib = w * marginal_contrib
+        return risk_contrib / risk_contrib.sum()  # 归一化
+
+    def risk_parity_objective(w, cov_matrix):
+        """优化目标：风险贡献的方差最小化"""
+        rc = calculate_risk_contribution(w, cov_matrix)
+        target_rc = np.ones_like(w) / len(w)  # 目标风险贡献相等
+        return np.sum((rc - target_rc) ** 2)
+
+    def rolling_risk_parity(returns, window=120, rebalance_freq='M'):
+        """修正后的滚动风险平价函数"""
+        # 生成再平衡日期并过滤不存在于原始数据的日期
+        reb_dates = returns.resample(rebalance_freq).last().index
+        reb_dates = reb_dates[reb_dates.isin(returns.index)]
+
+        weights = pd.DataFrame(index=reb_dates, columns=returns.columns)
+
+        for i, date in enumerate(reb_dates):
+            # 获取日期在原始数据中的位置
+            date_pos = returns.index.get_loc(date)
+
+            # 计算窗口起始位置，防止越界
+            start_pos = max(0, date_pos - window)
+            start_date = returns.index[start_pos]
+
+            # 提取窗口数据（使用iloc避免KeyError）
+            window_returns = returns.iloc[start_pos:date_pos]
+
+            # 检查窗口数据长度
+            if len(window_returns) < 10:  # 最小数据量要求
+                weights.loc[date] = np.nan
+                continue
+
+            # 计算协方差矩阵
+            from sklearn.covariance import LedoitWolf
+            cov_matrix = LedoitWolf().fit(window_returns).covariance_
+            # cov_matrix = window_returns.cov().values
+
+            # 优化权重（逻辑保持不变）
+            n_assets = len(returns.columns)
+            initial_guess = np.ones(n_assets) / n_assets
+
+            constraints = (
+                {'type': 'eq', 'fun': lambda w: np.sum(w) - 1},
+                {'type': 'ineq', 'fun': lambda w: w}
+            )
+
+            result = minimize(
+                risk_parity_objective,
+                initial_guess,
+                args=(cov_matrix,),
+                method='SLSQP',
+                constraints=constraints,
+                tol=1e-6
+            )
+
+            if result.success:
+                weights.loc[date] = result.x
+            else:
+                weights.loc[date] = np.nan
+
+        # 前向填充权重
+        weights = weights.resample('D').ffill().reindex(returns.index)
+        return weights.dropna(how='all')
+
+    rebalance_freq = 'M'  # 每月再平衡
+    weights = rolling_risk_parity(df, window=window_length, rebalance_freq=rebalance_freq)
+    portfolio_returns = (df* weights.shift(1)).sum(axis=1)  # 次日调仓
+
+    # 可视化
+    fig = plt.figure(figsize=(14, 8))
+
+    # 绘制权重变化
+    plt.subplot(2, 1, 1)
+    for col in weights.columns:
+        plt.plot(weights.index, weights[col], label=col)
+    plt.title('Rolling Risk Parity Weights')
+    plt.ylabel('Weight')
+    plt.legend()
+
+    # 绘制累计收益
+    plt.subplot(2, 1, 2)
+    cumulative_port = (1 + portfolio_returns).cumprod()
+    cumulative_bm = (1 + df.mean(axis=1)).cumprod()  # 等权重作为基准
+    plt.plot(cumulative_port, label='Risk Parity Portfolio')
+    plt.plot(cumulative_bm, label='Equal Weight Benchmark', linestyle='--')
+    plt.title('Cumulative Returns')
+    plt.ylabel('Growth')
+    plt.legend()
+
+    plt.tight_layout()
+    st.pyplot(fig)
+
 
 def return_stats(day_return, flag):
     def get_sharpe_ratio(b):
@@ -371,6 +475,7 @@ def page2():
         st.subheader("Strategy Performance")
         out_df = []
         data2 = data[temp_option]
+        data3 = data2.copy()
         data2["sum"] = data2.sum(axis=1)
         for col in data2.columns:
             out = return_stats(data2[col],col)
@@ -383,7 +488,8 @@ def page2():
         st1.metric("Drawdown Withdraw (%)",round(100*(per["max_drawdown"].iloc[-1]-total_drawdown)/total_drawdown,2))
         st2.metric("Calmar Ratio",round(per["calmar_ratio"].iloc[-1],2),round(per["calmar_ratio"].iloc[-1]-max(per["calmar_ratio"].iloc[:-1]),2),delta_color="inverse")
         st3.metric("Sharpe Ratio",round(per["sharpe_ratio"].iloc[-1],2),round(per["sharpe_ratio"].iloc[-1]-max(per["sharpe_ratio"].iloc[:-1]),2),delta_color="inverse")
-
+        st.subheader('Strategy Portfolio')
+        get_portfolio(data3)
 avg_data = get_avg_data()
 title = 'Strategy Pool Analysis'
 a = load_data()
