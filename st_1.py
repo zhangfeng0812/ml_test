@@ -363,9 +363,9 @@ def page2():
         width=800,
         height=500,
         title="Strategy Net Value"
-    )
-
-    chart  # 直接显示图表（已集成交互式图例）
+    ).interactive()
+    zoom = alt.selection_interval(bind='scales', encodings=['x'])  # 仅允许x轴缩放
+    chart = chart.add_params(zoom)
     st.subheader("Strategy Performance")
     out_df = []
     data2 = data[temp_option]
