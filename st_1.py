@@ -366,6 +366,7 @@ def page2():
     ).interactive()
     zoom = alt.selection_interval(bind='scales', encodings=['x'])  # 仅允许x轴缩放
     chart = chart.add_params(zoom)
+    chart
     st.subheader("Strategy Performance")
     out_df = []
     data2 = data[temp_option]
