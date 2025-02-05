@@ -303,86 +303,87 @@ def page1():
 def page2():
     options = st.multiselect("Choose the specific Strategies.",
                              backtest_results())
-    st.subheader("Correlation")
-    fig, ax = plt.subplots(figsize=(10, 8))
-    sns.heatmap(
-        a.corr[options].loc[options],
-        annot=True,
-        fmt=".2f",
-        cmap="coolwarm",
-        linewidths=0.5,
-        ax=ax
-    )
-    ax.set_title(f"Heatmap")
-    st.pyplot(fig)
-    st.subheader("Net Value Performance")
-    st0, st1 = st.columns(2)
-    year = st0.selectbox("Choose the specific years.",["all","2017","2018","2019","2020","2021","2022","2023","2024"])
-    bt0, bt1, bt2, bt3 = st1.columns(4)
-    bt0.write("Period")
-    bt_train = bt1.button("Train")
-    bt_test = bt2.button("Test")
-    bt_is = bt3.button("IS")
-    data = a.train_PnL
-    if bt_test:
-        data = a.test_PnL
-    if year and year != "all":
-        data = a.test_PnL[(a.test_PnL.index>str(year)) & (a.test_PnL.index<str(int(year)+1))]
-    if bt_train:
+    if len(options)!=0:
+        st.subheader("Correlation")
+        fig, ax = plt.subplots(figsize=(10, 8))
+        sns.heatmap(
+            a.corr[options].loc[options],
+            annot=True,
+            fmt=".2f",
+            cmap="coolwarm",
+            linewidths=0.5,
+            ax=ax
+        )
+        ax.set_title(f"Heatmap")
+        st.pyplot(fig)
+        st.subheader("Net Value Performance")
+        st0, st1 = st.columns(2)
+        year = st0.selectbox("Choose the specific years.",["all","2017","2018","2019","2020","2021","2022","2023","2024"])
+        bt0, bt1, bt2, bt3 = st1.columns(4)
+        bt0.write("Period")
+        bt_train = bt1.button("Train")
+        bt_test = bt2.button("Test")
+        bt_is = bt3.button("IS")
         data = a.train_PnL
-    df_lst = []
-    temp_option = options.copy()
-    for op in options:
-        df1 = data.cumsum()[op].to_frame()
-        df_lst.append(df1)
-    options.append("sum")
-    df = pd.concat(df_lst, axis=1, join="inner")
-    df["sum"] = df.sum(axis=1)
-    df['trade_day'] = df.index
-    selection = alt.selection_point(
-        fields=['column'],  # 绑定到折叠后的列名
-        bind='legend'  # 确保图例可以交互
-    )
-    # 创建折线图
-    chart = alt.Chart(df).transform_fold(
-        fold=options,  # 需要折叠的列
-        as_=['column', 'value']  # 定义新字段名称
-    ).mark_line().encode(
-        x='trade_day:T',  # 时间类型确保正确解析
-        y='value:Q',
-        color=alt.condition(
-            selection,  # 根据选择器状态改变颜色
-            alt.Color('column:N'),  # 隐藏默认图例（使用交互图例）
-            alt.value('lightgray')
-        ),
-        opacity=alt.condition(selection, alt.value(1), alt.value(0.2)),  # 增加透明度区分
-        tooltip=['trade_day:T', 'column:N', 'value:Q']
-    ).add_params(
-        selection  # 将选择器添加到图表
-    ).properties(
-        width=800,
-        height=500,
-        title="Strategy Net Value"
-    ).interactive()
-    zoom = alt.selection_interval(bind='scales', encodings=['x'])  # 仅允许x轴缩放
-    chart = chart.add_params(zoom)
-    chart
-    st.subheader("Strategy Performance")
-    out_df = []
-    data2 = data[temp_option]
-    data2["sum"] = data2.sum(axis=1)
-    for col in data2.columns:
-        out = return_stats(data2[col],col)
-        out_df.append([out["flag"],out["total_return"],out["max_drawdown"],out["sharpe_ratio"],out["calmar_ratio"]])
-    per = pd.DataFrame(out_df,columns=["Strategy","total_return","max_drawdown","sharpe_ratio","calmar_ratio"])
-    st.table(per)
-    total_drawdown = per["max_drawdown"].sum()-per["max_drawdown"].iloc[-1]
-    # The basic line
-    st1,st2,st3 = st.columns(3)
-    st1.metric("Drawdown Withdraw (%)",round(100*(per["max_drawdown"].iloc[-1]-total_drawdown)/total_drawdown,2))
-    st2.metric("Calmar Ratio",round(per["calmar_ratio"].iloc[-1],2),round(per["calmar_ratio"].iloc[-1]-max(per["calmar_ratio"].iloc[:-1]),2),delta_color="inverse")
-    st3.metric("Sharpe Ratio",round(per["sharpe_ratio"].iloc[-1],2),round(per["sharpe_ratio"].iloc[-1]-max(per["sharpe_ratio"].iloc[:-1]),2),delta_color="inverse")
-    print()
+        if bt_test:
+            data = a.test_PnL
+        if year and year != "all":
+            data = a.test_PnL[(a.test_PnL.index>str(year)) & (a.test_PnL.index<str(int(year)+1))]
+        if bt_train:
+            data = a.train_PnL
+        df_lst = []
+        temp_option = options.copy()
+        for op in options:
+            df1 = data.cumsum()[op].to_frame()
+            df_lst.append(df1)
+        options.append("sum")
+        df = pd.concat(df_lst, axis=1, join="inner")
+        df["sum"] = df.sum(axis=1)
+        df['trade_day'] = df.index
+        selection = alt.selection_point(
+            fields=['column'],  # 绑定到折叠后的列名
+            bind='legend'  # 确保图例可以交互
+        )
+        # 创建折线图
+        chart = alt.Chart(df).transform_fold(
+            fold=options,  # 需要折叠的列
+            as_=['column', 'value']  # 定义新字段名称
+        ).mark_line().encode(
+            x='trade_day:T',  # 时间类型确保正确解析
+            y='value:Q',
+            color=alt.condition(
+                selection,  # 根据选择器状态改变颜色
+                alt.Color('column:N'),  # 隐藏默认图例（使用交互图例）
+                alt.value('lightgray')
+            ),
+            opacity=alt.condition(selection, alt.value(1), alt.value(0.2)),  # 增加透明度区分
+            tooltip=['trade_day:T', 'column:N', 'value:Q']
+        ).add_params(
+            selection  # 将选择器添加到图表
+        ).properties(
+            width=800,
+            height=500,
+            title="Strategy Net Value"
+        ).interactive()
+        zoom = alt.selection_interval(bind='scales', encodings=['x'])  # 仅允许x轴缩放
+        chart = chart.add_params(zoom)
+        chart
+        st.subheader("Strategy Performance")
+        out_df = []
+        data2 = data[temp_option]
+        data2["sum"] = data2.sum(axis=1)
+        for col in data2.columns:
+            out = return_stats(data2[col],col)
+            out_df.append([out["flag"],out["total_return"],out["max_drawdown"],out["sharpe_ratio"],out["calmar_ratio"]])
+        per = pd.DataFrame(out_df,columns=["Strategy","total_return","max_drawdown","sharpe_ratio","calmar_ratio"])
+        st.table(per)
+        total_drawdown = per["max_drawdown"].sum()-per["max_drawdown"].iloc[-1]
+        # The basic line
+        st1,st2,st3 = st.columns(3)
+        st1.metric("Drawdown Withdraw (%)",round(100*(per["max_drawdown"].iloc[-1]-total_drawdown)/total_drawdown,2))
+        st2.metric("Calmar Ratio",round(per["calmar_ratio"].iloc[-1],2),round(per["calmar_ratio"].iloc[-1]-max(per["calmar_ratio"].iloc[:-1]),2),delta_color="inverse")
+        st3.metric("Sharpe Ratio",round(per["sharpe_ratio"].iloc[-1],2),round(per["sharpe_ratio"].iloc[-1]-max(per["sharpe_ratio"].iloc[:-1]),2),delta_color="inverse")
+
 avg_data = get_avg_data()
 title = 'Strategy Pool Analysis'
 a = load_data()
