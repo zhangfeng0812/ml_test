@@ -365,7 +365,7 @@ def page2():
             height=500,
             title="Strategy Net Value"
         ).interactive()
-        zoom = alt.selection_interval(bind='scales', encodings=['trade_day'])  # 仅允许x轴缩放
+        zoom = alt.selection_interval(bind='scales', encodings=['x'])  # 仅允许x轴缩放
         chart = chart.add_params(zoom)
         chart
         st.subheader("Strategy Performance")
