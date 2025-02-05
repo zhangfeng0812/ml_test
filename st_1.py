@@ -364,9 +364,7 @@ def page2():
             width=800,
             height=500,
             title="Strategy Net Value"
-        ).interactive().encode(
-            tooltip=['trade_day:T', 'column:N', 'value:Q']  # 添加鼠标悬停显示值
-        )
+        ).interactive()
         zoom = alt.selection_interval(bind='scales', encodings=['x'])  # 仅允许x轴缩放
         chart = chart.add_params(zoom)
         chart

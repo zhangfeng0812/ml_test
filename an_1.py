@@ -107,7 +107,15 @@ class An:
 
         dic = dict()
         dic['total_return'] = day_return.sum()
+        cumulative_returns = day_return.cumsum()
+        max_cumulative_returns = np.maximum.accumulate(cumulative_returns)
+        drawdowns = max_cumulative_returns - cumulative_returns
+        max_drawdown_end = np.argmax(drawdowns)
+        max_drawdown_start = np.argmax(cumulative_returns[:max_drawdown_end])
 
+        # 最大回撤天数
+        max_drawdown_days = max_drawdown_end - max_drawdown_start
+        dic['max_drawdown_duration'] = max_drawdown_days  # 新增字段
         # 计算最大回撤及其持续时间
         peak = cumulative.iloc[0]
         peak_idx = 0
@@ -128,7 +136,7 @@ class An:
                     max_duration = duration
 
         dic['max_drawdown'] = max_drawdown
-        dic['max_drawdown_duration'] = max_duration  # 新增字段
+        #dic['max_drawdown_duration'] = max_duration  # 新增字段
 
         # 其他指标（保持不变）
         dic['trade_day'] = list(day_return.index)
