@@ -489,7 +489,7 @@ def page2():
         st2.metric("Calmar Ratio",round(per["calmar_ratio"].iloc[-1],2),round(per["calmar_ratio"].iloc[-1]-max(per["calmar_ratio"].iloc[:-1]),2),delta_color="inverse")
         st3.metric("Sharpe Ratio",round(per["sharpe_ratio"].iloc[-1],2),round(per["sharpe_ratio"].iloc[-1]-max(per["sharpe_ratio"].iloc[:-1]),2),delta_color="inverse")
         st.subheader('Strategy Portfolio')
-        get_portfolio(data3)
+        get_portfolio(data3/5000000)
 avg_data = get_avg_data()
 title = 'Strategy Pool Analysis'
 a = load_data()
