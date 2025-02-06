@@ -113,6 +113,27 @@ def get_portfolio(df,window_length=120):
     plt.tight_layout()
     st.pyplot(fig)
 
+    def calculate_metrics(returns):
+        """计算绩效指标"""
+        cumulative_returns = (1 + returns).cumprod()
+        peak = cumulative_returns.expanding().max()
+        drawdown = (cumulative_returns - peak) / peak
+
+        return pd.Series({
+            'Annualized Return': returns.mean() * 252,
+            'Annualized Volatility': returns.std() * np.sqrt(252),
+            'Sharpe Ratio': returns.mean() / returns.std() * np.sqrt(252),
+            'Max Drawdown': drawdown.min(),
+            'Calmar Ratio': returns.mean() * 252 / abs(drawdown.min())
+        })
+
+    port_metrics = calculate_metrics(portfolio_returns)
+    bm_metrics = calculate_metrics(df.mean(axis=1))
+
+    print("\n策略绩效对比:")
+    st.table(pd.concat([port_metrics.rename('Risk Parity'),
+               bm_metrics.rename('Equal Weight')], axis=1).T)
+
 
 def return_stats(day_return, flag):
     def get_sharpe_ratio(b):
