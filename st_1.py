@@ -86,7 +86,8 @@ def get_portfolio(df,window_length=120):
         return weights.dropna(how='all')
 
     rebalance_freq = 'M'  # 每月再平衡
-    weights = rolling_risk_parity(df, window=window_length, rebalance_freq=rebalance_freq)
+    period = st.selectbox("select the specific period:",[30,60,90,120,240,500,1000])
+    weights = rolling_risk_parity(df, window=period, rebalance_freq=rebalance_freq)
     portfolio_returns = (df* weights.shift(1)).sum(axis=1)  # 次日调仓
 
     # 可视化
