@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
-ROOT = "comb11"
+ROOT = "comb"
 
 def get_portfolio(df,window_length=120):
     def calculate_risk_contribution(w, cov_matrix):
