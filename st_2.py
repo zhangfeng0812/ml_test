@@ -66,6 +66,19 @@ zoom = alt.selection_interval(bind='scales', on="[touchstart, touchmove]")
 
 
 combined_chart = (lines + lines2).interactive()
+lines5 = (
+        alt.Chart(data[100:200], width=800, height=500)
+        .mark_line(color='#ff7f0e')
+        .encode(x="x", y="rolling")
+    )
+lines6 = (
+        alt.Chart(data2[100:200], width=800, height=500)
+        .mark_line(color='#1f77b4')
+        .encode(x="x", y="total")
+    )
+st.altair_chart((lines5 + lines6).interactive())
+
+
 st.altair_chart(combined_chart)
 st.write("策略分品种曲线")
 fu = st.selectbox('选择对应的品种:', options=os.listdir('transaction/'))
