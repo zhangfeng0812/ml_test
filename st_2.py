@@ -26,8 +26,9 @@ rolling = (df['pnl']
                               .rolling(selection, min_periods=1)
                               .mean()
                              )
+data = rolling.to_frame()
 lines = (
-        alt.Chart(rolling, width=800, height=500)
+        alt.Chart(data, width=800, height=500)
         .mark_line(color='#ff7f0e')
         .encode(x="trade_day", y="test")
     )
