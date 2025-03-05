@@ -31,24 +31,18 @@ df = pd.concat(
 df = df.sort_values('exit_time').reset_index(drop=True)
 
 # 新增：定义绘图函数避免重复代码
+
 def create_line_chart(data, y_col, color):
-    # 核心交互配置
     zoom = alt.selection_interval(
         bind='scales',
-        on=["[mousedown, mouseup]", "[touchstart, touchend]"]  # 明确绑定触摸事件
+        on=["[mousedown, mouseup]", "[touchstart, touchend]"],
+        translate=["[mousemove]", "[touchmove]"]
     )
 
-    chart = alt.Chart(data).mark_line(color=color).encode(
-        x=alt.X('x:Q', title='交易序号'),
-        y=alt.Y(f'{y_col}:Q', title='胜率', scale=alt.Scale(domain=[0, 1]))
-    ).add_params(
-        zoom
-    ).properties(
-        width=800,
-        height=500
-    )
-    return chart
-
+    return alt.Chart(data).mark_line(color=color).encode(
+        x='x:Q',
+        y=alt.Y(f'{y_col}:Q', scale=alt.Scale(domain=[0, 1]))
+    ).add_params(zoom)
 
 # ----------------------------
 # 第一部分：全品种曲线
