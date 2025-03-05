@@ -49,7 +49,7 @@ lines2 = (
 st.altair_chart(lines+lines2)
 st.write("策略分品种曲线")
 fu = st.selectbox('选择对应的品种:', options=os.listdir('transaction/'))
-selection2 = st.selectbox('选择滚动周期数:', options=[50,100,200,500])
+selection2 = st.selectbox('选择滚动周期数:', options=[10,25,50,100,200])
 df3 = pd.read_csv(os.path.join("transaction/",fu))
 df3 = df3.sort_values('exit_time').reset_index(drop=True)
 total2 = (
