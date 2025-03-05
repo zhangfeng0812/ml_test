@@ -6,7 +6,7 @@ folder_path = r'transaction\*.csv'  # 替换为你的实际路径
 
 # 获取所有CSV文件列表
 file_list = glob.glob(folder_path)
-
+print(file_list)
 # 读取并合并CSV文件
 df = pd.concat(
     (pd.read_csv(file, parse_dates=['exit_time']) for file in file_list),
