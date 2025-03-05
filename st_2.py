@@ -4,7 +4,12 @@ import os
 import streamlit as st
 import altair as alt
 # 设置包含CSV文件的文件夹路径
+st.markdown(
+    """<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1">""",
+    unsafe_allow_html=True
+)
 folder_path = 'transaction/*.csv'  # 替换为你的实际路径
+
 st.set_page_config(layout="wide")
 # 获取所有CSV文件列表
 file_list = glob.glob(folder_path)
