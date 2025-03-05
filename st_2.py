@@ -47,10 +47,17 @@ lines2 = (
         .encode(x="x", y="total")
     )
 
-zoom = alt.selection_interval(bind='scales')
-(lines + lines2).add_selection(zoom)
+# 修改图表生成部分，添加触摸事件绑定
+zoom = alt.selection_interval(bind='scales', on="[touchstart, touchmove]")
+
+combined = (lines + lines2).add_selection(
+    zoom
+).properties(
+    # 添加触摸响应声明
+    config=alt.Config(viewport={"step": 1})
+)
 combined_chart = (lines + lines2).interactive()
-st.altair_chart(combined_chart)
+st.altair_chart(combined)
 st.write("策略分品种曲线")
 fu = st.selectbox('选择对应的品种:', options=os.listdir('transaction/'))
 selection2 = st.selectbox('选择滚动周期数:', options=[10,25,50,100,200])
