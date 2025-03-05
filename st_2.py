@@ -35,7 +35,7 @@ def create_line_chart(data, y_col, color):
     # 核心交互配置
     zoom = alt.selection_interval(
         bind='scales',
-        on="[touchstart, touchmove, touchend]"  # 明确绑定触摸事件
+        on=["[mousedown, mouseup]", "[touchstart, touchend]"]  # 明确绑定触摸事件
     )
 
     chart = alt.Chart(data).mark_line(color=color).encode(
