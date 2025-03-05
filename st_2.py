@@ -66,13 +66,15 @@ zoom = alt.selection_interval(bind='scales', on="[touchstart, touchmove]")
 
 
 combined_chart = (lines + lines2).interactive()
+begin = st.text_input("请输入开始的次数：")
+end = st.text_input("请输入结束的次数：")
 lines5 = (
-        alt.Chart(data[100:200], width=800, height=500)
+        alt.Chart(data[int(begin):int(end)], width=800, height=500)
         .mark_line(color='#ff7f0e')
         .encode(x="x", y="rolling")
     )
 lines6 = (
-        alt.Chart(data2[100:200], width=800, height=500)
+        alt.Chart(data2[int(begin):int(end)], width=800, height=500)
         .mark_line(color='#1f77b4')
         .encode(x="x", y="total")
     )
