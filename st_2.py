@@ -29,16 +29,16 @@ df = pd.concat(
 
 # 按exit_time排序
 df = df.sort_values('exit_time').reset_index(drop=True)
-total_win_rate = (df['pnl'] > 0).mean()
+total_win_rate = (df['pnlcomm'] > 0).mean()
 total = (
-    df['pnl'].gt(0)          # 判断每笔交易是否盈利（True/False）
+    df['pnlcomm'].gt(0)          # 判断每笔交易是否盈利（True/False）
     .expanding()             # 创建从第一行到当前行的累积窗口
     .mean()                  # 计算累积窗口内胜率的均值（True=1, False=0）
 )
 # 计算最近100次交易的滚动胜率
 st.write("策略全品种曲线")
 selection = st.selectbox('选择滚动周期数:', options=[50,100,200,500,1000])
-rolling = (df['pnl']
+rolling = (df['pnlcomm']
                               .gt(0)
                               .rolling(selection, min_periods=1)
                               .mean()
@@ -89,12 +89,12 @@ df3 = pd.read_csv(os.path.join("transaction/",fu))
 df3 = df3.sort_values('exit_time').reset_index(drop=True)
 print()
 total2 = (
-    df3['pnl'].gt(0)          # 判断每笔交易是否盈利（True/False）
+    df3['pnlcomm'].gt(0)          # 判断每笔交易是否盈利（True/False）
     .expanding()             # 创建从第一行到当前行的累积窗口
     .mean()                  # 计算累积窗口内胜率的均值（True=1, False=0）
 )
 # 计算最近100次交易的滚动胜率
-rolling2 = (df3['pnl']
+rolling2 = (df3['pnlcomm']
                               .gt(0)
                               .rolling(selection2, min_periods=1)
                               .mean()
