@@ -46,6 +46,9 @@ lines2 = (
         .mark_line(color='#1f77b4')
         .encode(x="x", y="total")
     )
+
+zoom = alt.selection_interval(bind='scales')
+(lines + lines2).add_selection(zoom)
 combined_chart = (lines + lines2).interactive()
 st.altair_chart(combined_chart)
 st.write("策略分品种曲线")
