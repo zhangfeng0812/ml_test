@@ -4,10 +4,19 @@ import os
 import streamlit as st
 import altair as alt
 # 设置包含CSV文件的文件夹路径
-st.markdown(
-    """<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1">""",
-    unsafe_allow_html=True
-)
+st.markdown("""
+<style>
+/* 强制图表容器响应式 */
+.vega-embed {
+    width: 100% !important;
+    height: auto !important;
+}
+/* 允许触摸事件穿透 */
+canvas {
+    touch-action: auto !important;
+}
+</style>
+""", unsafe_allow_html=True)
 folder_path = 'transaction/*.csv'  # 替换为你的实际路径
 
 # 获取所有CSV文件列表
