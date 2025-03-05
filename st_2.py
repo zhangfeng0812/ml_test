@@ -49,7 +49,7 @@ lines2 = (
 st.altair_chart(lines+lines2)
 st.write("策略分品种曲线")
 fu = st.selectbox('选择对应的品种:', options=os.listdir('transaction/'))
-selection2 = st.selectbox('选择滚动周期数:', options=[50,100,200,500,1000])
+selection2 = st.selectbox('选择滚动周期数:', options=[50,100,200,500])
 df3 = pd.read_csv(os.path.join("transaction/",fu))
 df3 = df3.sort_values('exit_time').reset_index(drop=True)
 total2 = (
@@ -60,7 +60,7 @@ total2 = (
 # 计算最近100次交易的滚动胜率
 rolling2 = (df3['pnl']
                               .gt(0)
-                              .rolling(selection, min_periods=1)
+                              .rolling(selection2, min_periods=1)
                               .mean()
                              )
 data3 = rolling2.to_frame()
