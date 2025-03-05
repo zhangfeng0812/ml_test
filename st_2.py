@@ -87,6 +87,7 @@ fu = st.selectbox('选择对应的品种:', options=os.listdir('transaction/'))
 selection2 = st.selectbox('选择滚动周期数:', options=[10,25,50,100,200])
 df3 = pd.read_csv(os.path.join("transaction/",fu))
 df3 = df3.sort_values('exit_time').reset_index(drop=True)
+print()
 total2 = (
     df3['pnl'].gt(0)          # 判断每笔交易是否盈利（True/False）
     .expanding()             # 创建从第一行到当前行的累积窗口
