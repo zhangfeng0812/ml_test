@@ -27,9 +27,11 @@ rolling = (df['pnl']
                               .mean()
                              )
 data = rolling.to_frame()
+data.columns = ["rolling"]
+data['x'] = data.index
 lines = (
         alt.Chart(data, width=800, height=500)
         .mark_line(color='#ff7f0e')
-
+        .encode(x="x", y="rolling")
     )
 st.altair_chart(lines)
