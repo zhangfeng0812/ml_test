@@ -1,6 +1,7 @@
 import pandas as pd
 import glob
 import streamlit as st
+import altair as alt
 # 设置包含CSV文件的文件夹路径
 folder_path = 'transaction/*.csv'  # 替换为你的实际路径
 
@@ -18,15 +19,16 @@ df = df.sort_values('exit_time').reset_index(drop=True)
 total_win_rate = (df['pnl'] > 0).mean()
 
 # 计算最近100次交易的滚动胜率
-rolling_win_rate = (df['pnl']
-                    .iloc[-100:]  # 取最后100条记录
-                    .gt(0)        # 转换为布尔值（是否盈利）
-                    .mean()       # 计算胜率
-                   )
-
+st.write("策略demo")
+selection = st.selectbox('选择滚动周期数:', options=[50,100,200,500,1000])
 rolling = (df['pnl']
                               .gt(0)
-                              .rolling(100, min_periods=1)
+                              .rolling(selection, min_periods=1)
                               .mean()
                              )
-st.write("test")
+lines = (
+        alt.Chart(rolling, width=800, height=500)
+        .mark_line(color='#ff7f0e')
+        .encode(x="trade_day", y="test")
+    )
+st.altair_chart(lines)
