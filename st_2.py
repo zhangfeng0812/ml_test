@@ -49,7 +49,6 @@ data['x'] = data.index
 data2 = total.to_frame()
 data2.columns = ["total"]
 data2['x'] = data2.index
-brush = alt.selection_interval(encodings=['x', 'rolling'])
 lines = (
         alt.Chart(data, width=800, height=500)
         .mark_line(color='#ff7f0e')
