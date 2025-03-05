@@ -34,7 +34,7 @@ data.columns = ["rolling"]
 data['x'] = data.index
 data2 = total.to_frame()
 data2.columns = ["total"]
-data2['x'] = data.index
+data2['x'] = data2.index
 lines = (
         alt.Chart(data, width=800, height=500)
         .mark_line(color='#ff7f0e')
@@ -42,7 +42,7 @@ lines = (
     )
 lines2 = (
         alt.Chart(data2, width=800, height=500)
-        .mark_line(color='#ff7f0e')
-        .encode(x="x", y="rolling")
+        .mark_line(color='#1f77b4')
+        .encode(x="x", y="total")
     )
 st.altair_chart(lines+lines2)
