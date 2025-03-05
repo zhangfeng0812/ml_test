@@ -10,7 +10,6 @@ st.markdown(
 )
 folder_path = 'transaction/*.csv'  # 替换为你的实际路径
 
-st.set_page_config(layout="wide")
 # 获取所有CSV文件列表
 file_list = glob.glob(folder_path)
 # 读取并合并CSV文件
