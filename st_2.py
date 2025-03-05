@@ -7,7 +7,6 @@ folder_path = 'transaction/*.csv'  # 替换为你的实际路径
 
 # 获取所有CSV文件列表
 file_list = glob.glob(folder_path)
-print(file_list)
 # 读取并合并CSV文件
 df = pd.concat(
     (pd.read_csv(file, parse_dates=['exit_time']) for file in file_list),
@@ -17,7 +16,11 @@ df = pd.concat(
 # 按exit_time排序
 df = df.sort_values('exit_time').reset_index(drop=True)
 total_win_rate = (df['pnl'] > 0).mean()
-
+total = (
+    df['pnl'].gt(0)          # 判断每笔交易是否盈利（True/False）
+    .expanding()             # 创建从第一行到当前行的累积窗口
+    .mean()                  # 计算累积窗口内胜率的均值（True=1, False=0）
+)
 # 计算最近100次交易的滚动胜率
 st.write("策略demo")
 selection = st.selectbox('选择滚动周期数:', options=[50,100,200,500,1000])
@@ -29,9 +32,17 @@ rolling = (df['pnl']
 data = rolling.to_frame()
 data.columns = ["rolling"]
 data['x'] = data.index
+data2 = total.to_frame()
+data2.columns = ["total"]
+data2['x'] = data.index
 lines = (
         alt.Chart(data, width=800, height=500)
         .mark_line(color='#ff7f0e')
         .encode(x="x", y="rolling")
     )
-st.altair_chart(lines)
+lines2 = (
+        alt.Chart(data2, width=800, height=500)
+        .mark_line(color='#ff7f0e')
+        .encode(x="x", y="rolling")
+    )
+st.altair_chart(lines+lines2)
