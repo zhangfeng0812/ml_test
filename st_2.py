@@ -30,6 +30,6 @@ data = rolling.to_frame()
 lines = (
         alt.Chart(data, width=800, height=500)
         .mark_line(color='#ff7f0e')
-        .encode(x="trade_day", y="test")
+
     )
 st.altair_chart(lines)
