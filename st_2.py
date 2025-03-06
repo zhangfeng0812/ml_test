@@ -56,8 +56,12 @@ st.altair_chart(create_chart(pd.concat([rolling2[start:end], total2[start:end]],
 # 分品种分析
 st.header("分品种分析")
 symbol = st.selectbox('选择品种:', glob.glob('transaction/*.csv'))
+symbol2 = st.selectbox('选择品种:', glob.glob('transaction2/*.csv'))
 window_symbol = st.selectbox('选择滚动周期数:', [10,25,50,100,200], key='symbol_window')
 
 df_symbol = load_data(symbol)
+df_symbol2 = load_data(symbol2)
 rolling_s, total_s = compute_metrics(df_symbol, window_symbol)
+rolling_s2, total_s2 = compute_metrics(df_symbol2, window_symbol)
 st.altair_chart(create_chart(pd.concat([rolling_s, total_s], axis=1)))
+st.altair_chart(create_chart(pd.concat([rolling_s2, total_s2], axis=1)))
