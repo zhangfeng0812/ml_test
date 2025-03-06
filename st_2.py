@@ -36,16 +36,22 @@ def create_chart(data, colors=('#ff7f0e', '#1f77b4')):
 # 全品种分析
 st.header("全品种分析")
 df = load_data('transaction/*.csv')
+df2 = load_data('transaction2/*.csv')
 window = st.selectbox('选择滚动周期数:', [50,100,200,500,1000], key='global_window')
-
+st.write("不含手续费")
 rolling, total = compute_metrics(df, window)
 st.altair_chart(create_chart(pd.concat([rolling, total], axis=1)))
-
+st.write("含手续费")
+rolling2, total2 = compute_metrics(df2, window)
+st.altair_chart(create_chart(pd.concat([rolling2, total2], axis=1)))
 # 局部范围分析
 col1, col2 = st.columns(2)
 with col1: start = st.number_input("起始次数", 0, len(df)-1, 0)
 with col2: end = st.number_input("结束次数", start+1, len(df), len(df))
+st.write("不含手续费")
 st.altair_chart(create_chart(pd.concat([rolling[start:end], total[start:end]], axis=1)))
+st.write("含手续费")
+st.altair_chart(create_chart(pd.concat([rolling2[start:end], total2[start:end]], axis=1)))
 
 # 分品种分析
 st.header("分品种分析")
