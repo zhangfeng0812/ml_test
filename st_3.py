@@ -29,16 +29,16 @@ df = pd.concat(
 
 # 按exit_time排序
 df = df.sort_values('exit_time').reset_index(drop=True)
-total_win_rate = (df['pnl'] > 0).mean()
+total_win_rate = (df['pnlcomm'] > 0).mean()
 total = (
-    df['pnl'].gt(0)          # 判断每笔交易是否盈利（True/False）
+    df['pnlcomm'].gt(0)          # 判断每笔交易是否盈利（True/False）
     .expanding()             # 创建从第一行到当前行的累积窗口
     .mean()                  # 计算累积窗口内胜率的均值（True=1, False=0）
 )
 # 计算最近100次交易的滚动胜率
 st.write("策略全品种曲线")
 selection = st.selectbox('选择滚动周期数:', options=[50,100,200,500,1000])
-rolling = (df['pnl']
+rolling = (df['pnlcomm']
                               .gt(0)
                               .rolling(selection, min_periods=1)
                               .mean()
@@ -49,7 +49,6 @@ data['x'] = data.index
 data2 = total.to_frame()
 data2.columns = ["total"]
 data2['x'] = data2.index
-brush = alt.selection_interval(encodings=['x', 'rolling'])
 lines = (
         alt.Chart(data, width=800, height=500)
         .mark_line(color='#ff7f0e')
@@ -66,19 +65,35 @@ zoom = alt.selection_interval(bind='scales', on="[touchstart, touchmove]")
 
 
 combined_chart = (lines + lines2).interactive()
+begin = st.text_input("请输入开始的次数：")
+end = st.text_input("请输入结束的次数：")
+lines5 = (
+        alt.Chart(data[int(begin):int(end)], width=800, height=500)
+        .mark_line(color='#ff7f0e')
+        .encode(x="x", y="rolling")
+    )
+lines6 = (
+        alt.Chart(data2[int(begin):int(end)], width=800, height=500)
+        .mark_line(color='#1f77b4')
+        .encode(x="x", y="total")
+    )
+st.altair_chart((lines5 + lines6).interactive())
+
+
 st.altair_chart(combined_chart)
 st.write("策略分品种曲线")
 fu = st.selectbox('选择对应的品种:', options=os.listdir('transaction/'))
 selection2 = st.selectbox('选择滚动周期数:', options=[10,25,50,100,200])
 df3 = pd.read_csv(os.path.join("transaction/",fu))
 df3 = df3.sort_values('exit_time').reset_index(drop=True)
+print()
 total2 = (
-    df3['pnl'].gt(0)          # 判断每笔交易是否盈利（True/False）
+    df3['pnlcomm'].gt(0)          # 判断每笔交易是否盈利（True/False）
     .expanding()             # 创建从第一行到当前行的累积窗口
     .mean()                  # 计算累积窗口内胜率的均值（True=1, False=0）
 )
 # 计算最近100次交易的滚动胜率
-rolling2 = (df3['pnl']
+rolling2 = (df3['pnlcomm']
                               .gt(0)
                               .rolling(selection2, min_periods=1)
                               .mean()
