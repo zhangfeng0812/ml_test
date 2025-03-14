@@ -9,7 +9,6 @@ import os
 import pandas as pd
 import matplotlib
 
-matplotlib.use('TkAgg')
 matplotlib.rcParams['font.sans-serif'] = ['Microsoft YaHei']  # 或者你系统中的其他中文字体
 matplotlib.rcParams['axes.unicode_minus'] = False  # 正确显示负号
 def analyze_loss_events(daily_returns, threshold=-0.02):
