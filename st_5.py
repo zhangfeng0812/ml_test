@@ -129,7 +129,7 @@ if daily_returns is not None:
     sharpe, trades, win_rate = calculate_trade_stats(trading_curve)
     st.write(f"\n策略绩效:")
     st.write(f"夏普比率: {sharpe:.2f}")
-    st.write(f"交易次数: {trades}")
+    # st.write(f"交易次数: {trades}")
     st.write(f"胜率: {win_rate * 100:.1f}%")
 
     # 可视化结果
