@@ -66,8 +66,8 @@ def plot_daily_returns(daily_returns, trading_curve):
     # 上方子图：原始策略的日收益曲线
     ax1 = plt.subplot(2, 1, 1)
     ax1.plot(daily_returns.index, daily_returns.cumsum(), label='Daily Returns', color='tab:blue')
-    ax1.set_title("原始策略的日收益曲线")
-    ax1.set_ylabel("累计收益")
+    ax1.set_title("backtest")
+    ax1.set_ylabel("accumulated profit")
     ax1.legend(loc='upper left')
     ax1.grid(True)
 
@@ -75,9 +75,9 @@ def plot_daily_returns(daily_returns, trading_curve):
     ax2 = plt.subplot(2, 1, 2)
     clean_curve = trading_curve.dropna()
     ax2.plot(clean_curve.index, clean_curve.cumsum(), label='Trading Returns', color='tab:red')
-    ax2.set_title("交易盈利情况的折线图")
-    ax2.set_ylabel("累计收益")
-    ax2.set_xlabel("日期")
+    ax2.set_title("trading curve")
+    ax2.set_ylabel("accumulated profit")
+    ax2.set_xlabel("Date")
     ax2.legend(loc='upper left')
     ax2.grid(True)
 
@@ -114,8 +114,8 @@ daily_returns = pickle.load(open('pickle/'+file, 'rb'))
 if daily_returns is not None:
     # 亏损分析
     loss_count, loss_dist = analyze_loss_events(daily_returns, LOSS_THRESHOLD)
-    print(f"大亏事件: {loss_count}次")
-    print("连续亏损分布:\n", loss_dist)
+    st.write(f"大亏事件: {loss_count}次")
+    st.write("连续亏损分布:\n", loss_dist)
 
     # 生成交易曲线
     trading_curve = track_trading_curve(
@@ -127,10 +127,10 @@ if daily_returns is not None:
 
     # 计算绩效指标
     sharpe, trades, win_rate = calculate_trade_stats(trading_curve)
-    print(f"\n策略绩效:")
-    print(f"夏普比率: {sharpe:.2f}")
-    print(f"交易次数: {trades}")
-    print(f"胜率: {win_rate * 100:.1f}%")
+    st.write(f"\n策略绩效:")
+    st.write(f"夏普比率: {sharpe:.2f}")
+    st.write(f"交易次数: {trades}")
+    st.write(f"胜率: {win_rate * 100:.1f}%")
 
     # 可视化结果
     plot_daily_returns(daily_returns, trading_curve)
