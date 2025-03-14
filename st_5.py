@@ -82,7 +82,7 @@ def plot_daily_returns(daily_returns, trading_curve):
     ax2.grid(True)
 
     plt.tight_layout()
-    plt.show()
+    st.pyplot(plt)
 
 
 def calculate_trade_stats(trading_curve):
