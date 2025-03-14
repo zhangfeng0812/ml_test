@@ -108,7 +108,7 @@ def calculate_trade_stats(trading_curve):
     return sharpe, len(returns), win_rate
 file = st.selectbox('选择对应的文件:',os.listdir("pickle/"), key='global_window')
 LOSS_THRESHOLD= st.number_input("下跌阈值-- 1/100000", 0, 100, 1)/-100000
-PROFIT_TARGET = st.number_input("上涨比率-- 1/10000", 0, 100, 1)/10000
+PROFIT_TARGET = st.number_input("上涨比率-- 1/100000", 0, 100, 1)/100000
 MAX_HOLDING = st.number_input("最多持仓天数-- 1/10000", 0, 100, 1)
 daily_returns = pickle.load(open('pickle/'+file, 'rb'))
 if daily_returns is not None:
