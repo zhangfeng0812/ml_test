@@ -26,6 +26,7 @@ for name, path in files.items():
         data_dict[name] = data
 
 # 合并策略每日收益率
+
 df_daily_return = pd.concat(data_dict.values(), axis=1)
 
 # 比例调整（根据你的需求）
