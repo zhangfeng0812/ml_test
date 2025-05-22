@@ -9,9 +9,9 @@ st.title("📈 多策略曲线对比")
 
 # 文件路径
 files = {
-    "BOLL1": "/pkl/BOLL1.pkl",
-    "Shock4": "/pkl/Shock4.pkl",
-    "Shock5": "/pkl/Shock5.pkl",
+    "BOLL1": "/real/pkl/BOLL1.pkl",
+    "Shock4": "/real/pkl/Shock4.pkl",
+    "Shock5": "/real/pkl/Shock5.pkl",
 }
 
 # 加载数据
