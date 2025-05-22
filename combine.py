@@ -8,6 +8,7 @@ st.title("📈 策略每日收益 & 累计收益展示（Plotly）")
 # 文件路径
 files = {
     "BOLL1": "./real/pkl/BOLL1.pkl",
+    "BBI": "./real/pkl/TouchBBI1.pkl",
     "Shock4": "./real/pkl/Shock4.pkl",
     "Shock5": "./real/pkl/Shock5.pkl",
     "l_2_10_10": "./real/pkl/L_2_10_10.pkl",
