@@ -13,6 +13,8 @@ files = {
     "BOLL1": "./real/pkl/BOLL1.pkl",
     "Shock4": "./real/pkl/Shock4.pkl",
     "Shock5": "./real/pkl/Shock5.pkl",
+    "l_2_10_10": "./real/pkl/L_2_10_10.pkl",
+    "l_2_18_10": "./real/pkl/L_2_18_10.pkl",
 }
 data_dict = {}
 for name, path in files.items():
