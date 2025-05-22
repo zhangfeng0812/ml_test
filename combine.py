@@ -45,7 +45,7 @@ if show_combined:
     df_cum_return["Combined"] = df_daily_return["Combined"].cumsum()
 
 # 展示类型选择
-option = st.radio("选择展示类型", ("每日收益率", "累计收益率"))
+option = st.radio("选择展示类型", ("累计收益率", "每日收益率"))
 df_plot = df_daily_return if option == "每日收益率" else df_cum_return
 
 # 显示原始数据（可选）
