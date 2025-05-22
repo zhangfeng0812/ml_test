@@ -14,7 +14,6 @@ files = {
     "Shock4": "./real/pkl/Shock4.pkl",
     "Shock5": "./real/pkl/Shock5.pkl",
 }
-# 加载数据
 data_dict = {}
 for name, path in files.items():
     with open(path, "rb") as f:
@@ -25,13 +24,22 @@ for name, path in files.items():
             data.columns = [name]
         data_dict[name] = data
 
-# 合并所有策略收益率
+# 合并所有策略每日收益率
 df_daily_return = pd.concat(data_dict.values(), axis=1)
 
 # 计算累计收益率（cumsum）
 df_cum_return = df_daily_return.cumsum()
 
-# 切换展示内容
+# 是否展示汇总曲线
+show_combined = st.checkbox("➕ 显示策略汇总曲线（多策略组合）", value=True)
+
+# 如果勾选了汇总按钮，计算汇总策略的收益
+if show_combined:
+    combined_daily = df_daily_return.sum(axis=1)
+    df_daily_return["Combined"] = combined_daily
+    df_cum_return["Combined"] = combined_daily.cumsum()
+
+# 选择展示类型
 option = st.radio("选择展示类型", ("每日收益率", "累计收益率"))
 
 if st.checkbox("📋 显示原始数据"):
