@@ -25,61 +25,43 @@ for name, path in files.items():
             data.columns = [name]
         data_dict[name] = data
 
-# 合并成 DataFrame
+# 合并所有策略每日收益率
 df_daily_return = pd.concat(data_dict.values(), axis=1)
 
-# 确保 index 为 datetime 类型
-if not pd.api.types.is_datetime64_any_dtype(df_daily_return.index):
-    try:
-        df_daily_return.index = pd.to_datetime(df_daily_return.index)
-    except Exception as e:
-        st.error(f"时间索引转换失败：{e}")
-        st.stop()
-
-# 计算累计收益
+# 计算累计收益率（cumsum）
 df_cum_return = df_daily_return.cumsum()
 
-# 显示组合曲线
+# 是否展示汇总曲线
 show_combined = st.checkbox("➕ 显示策略汇总曲线（多策略组合）", value=True)
+
+# 如果勾选了汇总按钮，计算汇总策略的收益
 if show_combined:
-    combined = df_daily_return.sum(axis=1)
-    df_daily_return["Combined"] = combined
-    df_cum_return["Combined"] = combined.cumsum()
+    combined_daily = df_daily_return.sum(axis=1)
+    df_daily_return["Combined"] = combined_daily
+    df_cum_return["Combined"] = combined_daily.cumsum()
 
 # 选择展示类型
 option = st.radio("选择展示类型", ("每日收益率", "累计收益率"))
-df_plot = df_daily_return if option == "每日收益率" else df_cum_return
 
-# 显示原始数据（可选）
 if st.checkbox("📋 显示原始数据"):
-    st.dataframe(df_plot.tail())
+    if option == "每日收益率":
+        st.dataframe(df_daily_return.tail())
+    else:
+        st.dataframe(df_cum_return.tail())
 
-# 长格式用于 Altair
-df_long = df_plot.copy()
-df_long["时间"] = df_long.index
-df_long = df_long.melt(id_vars="时间", var_name="策略", value_name="收益")
+# 绘图
+st.subheader("📊 策略收益曲线")
+fig, ax = plt.subplots(figsize=(12, 6))
 
-# 显示数据检查信息（调试用）
-if st.checkbox("🔍 显示调试信息"):
-    st.write(df_long.dtypes)
-    st.write(df_long.head())
+if option == "每日收益率":
+    df_daily_return.plot(ax=ax)
+    ax.set_title("每日收益率")
+    ax.set_ylabel("收益率")
+else:
+    df_cum_return.plot(ax=ax)
+    ax.set_title("累计收益率（Cumulative Return）")
+    ax.set_ylabel("累计收益")
 
-# Altair 绘图
-st.subheader("📊 策略收益曲线图（Altair）")
-
-try:
-    chart = alt.Chart(df_long).mark_line().encode(
-        x=alt.X("时间:T", title="时间"),
-        y=alt.Y("收益:Q", title="收益"),
-        color="策略:N",
-        tooltip=["时间:T", "策略:N", "收益:Q"]
-    ).properties(
-        width=1000,
-        height=500,
-        title=f"{option} 曲线"
-    ).interactive()
-
-    st.altair_chart(chart, use_container_width=True)
-
-except Exception as e:
-    st.error(f"Altair 图形渲染失败：{e}")
+ax.set_xlabel("时间")
+ax.grid(True)
+st.pyplot(fig)
