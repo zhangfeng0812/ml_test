@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import pickle
 import plotly.graph_objects as go
-
 st.set_page_config(page_title="策略收益展示", layout="wide")
 st.title("📈 策略每日收益 & 累计收益展示（Plotly）")
 
