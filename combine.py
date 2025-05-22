@@ -27,7 +27,7 @@ for name, path in files.items():
 
 # 合并所有策略每日收益率
 df_daily_return = pd.concat(data_dict.values(), axis=1)
-
+df_daily_return["l_2_18_10"]=df_daily_return["l_2_18_10"]*0.1
 # 计算累计收益率（cumsum）
 df_cum_return = df_daily_return.cumsum()
 
