@@ -33,7 +33,7 @@ for name, path in files.items():
 
 # 补全缺失值并计算总收益
 merged_df = merged_df.ffill()
-merged_df["Total"] = merged_df.sum(axis=1)
+merged_df["Total"] = merged_df.sum(axis=0)
 merged_df.reset_index(inplace=True)
 merged_df.rename(columns={merged_df.columns[0]: "Date"}, inplace=True)
 
@@ -47,16 +47,4 @@ fig_daily.update_layout(title="每日收益曲线", xaxis_title="日期", yaxis_
                         hovermode="x unified", template="plotly_white")
 st.plotly_chart(fig_daily, use_container_width=True)
 
-# 累计收益
-st.subheader("💰 累计收益（Cumulative Returns）")
-cumulative_df = merged_df.copy()
-for col in cumulative_df.columns[1:]:
-    cumulative_df[col] = cumulative_df[col].cumsum()
-
-fig_cumulative = go.Figure()
-for col in cumulative_df.columns[1:]:
-    fig_cumulative.add_trace(go.Scatter(x=cumulative_df["Date"], y=cumulative_df[col],
-                                        mode='lines', name=col))
-fig_cumulative.update_layout(title="累计收益曲线", xaxis_title="日期", yaxis_title="累计收益",
-                             hovermode="x unified", template="plotly_white")
-st.plotly_chart(fig_cumulative, use_container_width=True)
+#
