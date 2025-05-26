@@ -62,17 +62,8 @@ df_plot = df_daily_return if option == "每日收益率" else df_cum_return
 
 # 日期范围过滤
 st.subheader("📅 选择展示时间范围")
-end_date = df_plot.index.max()
-start_date = end_date - pd.DateOffset(months=2)
 
-start, end = st.date_input(
-    "请选择日期范围：",
-    value=(start_date, end_date),
-    min_value=df_plot.index.min(),
-    max_value=df_plot.index.max()
-)
 
-df_plot = df_plot.loc[(df_plot.index >= pd.to_datetime(start)) & (df_plot.index <= pd.to_datetime(end))]
 
 # 策略多选框
 st.subheader("📌 选择要展示的策略")
