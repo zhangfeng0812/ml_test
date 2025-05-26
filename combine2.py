@@ -23,8 +23,7 @@ for name, path in files.items():
     df = pd.read_csv(path)
     df[df.columns[0]] = pd.to_datetime(df[df.columns[0]])
     df.set_index(df.columns[0], inplace=True)
-    df2 = df.sum(axis=1)
-    df2.columns = [name]   # 重命名该列为策略名
+    df2 = pd.DataFrame(df.sum(axis=1), columns=[name])
 
     if merged_df is None:
         merged_df = df2
