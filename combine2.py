@@ -42,9 +42,7 @@ for name, path in files.items():
 # 合并策略每日收益率
 df_daily_return = pd.concat(data_dict.values(), axis=1)
 
-# 比例调整
-if "Shock5" in df_daily_return.columns:
-    df_daily_return["Shock5"] *= 10
+
 
 # 时间索引格式化
 df_daily_return.index = pd.to_datetime(df_daily_return.index)
@@ -56,7 +54,7 @@ df_cum_return = df_daily_return.cumsum()
 show_combined = st.checkbox("➕ 显示策略汇总曲线（多策略组合）", value=True)
 if show_combined:
     df_daily_return["Combined"] = df_daily_return.sum(axis=1)
-    df_cum_return["Combined"] = df_daily_return["Combined"].cumsum()
+    df_cum_return["Combined"] = df_daily_return["Combined"]
 
 # 选择每日 or 累计收益
 option = st.radio("选择展示类型", ("累计收益率", "每日收益率"))
