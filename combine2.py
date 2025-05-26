@@ -45,8 +45,8 @@ merged_df.rename(columns={merged_df.columns[0]: "Date"}, inplace=True)
 st.subheader("🌟 策略组合 Total 每日收益")
 fig_total = go.Figure()
 fig_total.add_trace(go.Scatter(
-    x=merged_df["Date"],
-    y=merged_df["Total"],
+    x=merged_df["Date"][60:],
+    y=merged_df["Total"][60:],
     mode='lines',
     name="Total",
     line=dict(width=3, color="firebrick")
@@ -69,19 +69,4 @@ fig_daily.update_layout(title="每日收益曲线（所有策略）",
                         hovermode="x unified", template="plotly_white")
 st.plotly_chart(fig_daily, use_container_width=True)
 
-# ------------------ 所有策略累计收益图 ------------------
-st.subheader("💰 所有策略累计收益（含 Total）")
-cumulative_df = merged_df.copy()
-for col in cumulative_df.columns[1:]:
-    cumulative_df[col] = cumulative_df[col].cumsum()
 
-fig_cumulative = go.Figure()
-for col in cumulative_df.columns[1:]:
-    fig_cumulative.add_trace(go.Scatter(
-        x=cumulative_df["Date"], y=cumulative_df[col],
-        mode='lines', name=col
-    ))
-fig_cumulative.update_layout(title="累计收益曲线",
-                             xaxis_title="日期", yaxis_title="累计收益",
-                             hovermode="x unified", template="plotly_white")
-st.plotly_chart(fig_cumulative, use_container_width=True)
