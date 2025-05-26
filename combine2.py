@@ -57,9 +57,9 @@ fig_total.update_layout(title="Total 策略每日收益曲线",
 st.plotly_chart(fig_total, use_container_width=True)
 
 # ------------------ 所有策略每日收益图 ------------------
-st.subheader("📊 所有策略每日收益（包含 Total）")
+st.subheader("📊 所有策略每日收益")
 fig_daily = go.Figure()
-for col in merged_df.columns[1:]:
+for col in merged_df.columns[1:-1]:
     fig_daily.add_trace(go.Scatter(
         x=merged_df["Date"], y=merged_df[col],
         mode='lines', name=col
