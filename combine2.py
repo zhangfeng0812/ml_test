@@ -23,17 +23,17 @@ for name, path in files.items():
     df = pd.read_csv(path)
     df[df.columns[0]] = pd.to_datetime(df[df.columns[0]])
     df.set_index(df.columns[0], inplace=True)
-    df = df.iloc[:, [0]]  # 只取第一列数据
-    df.columns = [name]   # 重命名该列为策略名
+    df2 = df.sum(axis=1)
+    df2.columns = [name]   # 重命名该列为策略名
 
     if merged_df is None:
-        merged_df = df
+        merged_df = df2
     else:
-        merged_df = merged_df.join(df, how='outer')
+        merged_df = merged_df.join(df2, how='outer')
 
 # 补全缺失值并计算总收益
 merged_df = merged_df.ffill()
-merged_df["Total"] = merged_df.sum(axis=0)
+merged_df["Total"] = merged_df.sum(axis=1)
 merged_df.reset_index(inplace=True)
 merged_df.rename(columns={merged_df.columns[0]: "Date"}, inplace=True)
 
