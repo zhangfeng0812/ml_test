@@ -30,6 +30,7 @@ for name, path in files.items():
 
     if merged_df is None:
         merged_df = df2
+
     else:
         merged_df = merged_df.join(df2, how='outer')
 
