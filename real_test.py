@@ -79,7 +79,10 @@ if strategy_for_trades:
 
     for f in transaction_files:
         symbol = f.stem
-        df = pd.read_csv(f, header=None, names=["time", "operation"])
+        try:
+            df = pd.read_csv(f, header=None, names=["time", "operation"], encoding="utf-8")
+        except UnicodeDecodeError:
+            df = pd.read_csv(f, header=None, names=["time", "operation"], encoding="gbk")  # 或 'latin1'
         df["symbol"] = symbol
         df["time"] = pd.to_datetime(df["time"])
         all_trades.append(df)
