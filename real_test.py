@@ -4,6 +4,7 @@ from pathlib import Path
 
 st.set_page_config(page_title="策略资产与交易展示", layout="wide")
 st.title("📈 策略资产展示（按策略汇总）")
+st.title("张峰")
 
 DATA_ROOT = Path("./platform")
 
