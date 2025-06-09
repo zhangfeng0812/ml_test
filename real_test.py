@@ -67,3 +67,25 @@ if strategy_total_assets:
     fig.update_layout(xaxis_title="日期", yaxis_title="资产", legend_title="策略")
     fig.update_yaxes(tickformat=",.0f")
     st.plotly_chart(fig, use_container_width=True)
+st.markdown("---")
+st.header("🔍 查询策略交易记录")
+
+strategy_for_trades = st.selectbox("选择一个策略查看交易记录", strategies)
+
+if strategy_for_trades:
+    transaction_path = DATA_ROOT / strategy_for_trades / "transaction"
+    transaction_files = sorted(transaction_path.glob("*.log"))
+    all_trades = []
+
+    for f in transaction_files:
+        symbol = f.stem
+        df = pd.read_csv(f, header=None, names=["time", "operation"])
+        df["symbol"] = symbol
+        df["time"] = pd.to_datetime(df["time"])
+        all_trades.append(df)
+
+    if all_trades:
+        trade_df = pd.concat(all_trades).sort_values("time").reset_index(drop=True)
+        st.dataframe(trade_df, use_container_width=True)
+    else:
+        st.info("该策略没有找到任何交易记录文件。")
