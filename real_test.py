@@ -49,5 +49,6 @@ if strategy_total_assets:
     for strategy, df in strategy_total_assets.items():
         total_df[strategy] = df["asset"]
 
+
     total_df["Total"] = total_df.sum(axis=1)
     st.line_chart(total_df["Total"])
