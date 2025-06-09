@@ -6,7 +6,7 @@ from pathlib import Path
 st.set_page_config(page_title="策略资产与交易展示", layout="wide")
 st.title("📈 策略资产与交易展示")
 
-DATA_ROOT = Path(".")
+DATA_ROOT = Path("./platform")
 
 # 获取所有策略文件夹（假设不含 .py 文件）
 strategies = [f.name for f in DATA_ROOT.iterdir() if f.is_dir() and not f.name.startswith(".")]
