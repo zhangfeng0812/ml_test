@@ -86,6 +86,7 @@ if strategy_for_trades:
         df["symbol"] = symbol
         df["time"] = pd.to_datetime(df["time"])
         all_trades.append(df)
+        print()
 
     if all_trades:
         trade_df = pd.concat(all_trades).sort_values("time").reset_index(drop=True)
